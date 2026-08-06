@@ -48,6 +48,7 @@ set(TOASTYREPLAY_SOURCES
     src/hacks/physicsbypass.cpp
     src/hacks/safemode.cpp
     src/hacks/hitboxes.cpp
+    src/hacks/intentional_death.cpp
     src/trajectory/trajectory.cpp
     src/trajectory/trajectory_physics.cpp
     src/render/render_config.cpp
@@ -86,6 +87,16 @@ endif()
 if (ANDROID)
     # Android specific compilation flags for Geode compatibility
     target_compile_options(${PROJECT_NAME} PRIVATE -fvisibility=hidden)
+    
+    # Ensure performance-critical files are optimized for mobile platforms
+    set_source_files_properties(
+        src/audio/clicksounds.cpp
+        src/audio/playsound.cpp
+        src/tools/speedhackaudio.cpp
+        src/hacks/autoclicker.cpp
+        PROPERTIES
+            COMPILE_OPTIONS "$<$<CONFIG:Release>:-O3>"
+    )
     
     # Log library is required for debugging on Android devices
     find_library(LOG_LIB log)
