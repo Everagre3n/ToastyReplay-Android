@@ -19,8 +19,24 @@ jobs:
     runs-on: ${{ matrix.config.os }}
 
     steps:
-      - uses: actions/checkout@v4
+      # Step 1: Download the clean, official code assets automatically
+      - name: Fetch Core Source Tree
+        uses: actions/checkout@v4
+        with:
+          repository: 'ToastexGD/ToastyReplay'
 
+      # Step 2: Overwrite the core code with your custom configuration files
+      - name: Inject Custom Android Fork Assets
+        uses: actions/checkout@v4
+        with:
+          path: 'custom-fork-files'
+
+      - name: Overwrite Config Files
+        run: |
+          cp -f custom-fork-files/CMakeLists.txt ./CMakeLists.txt
+          cp -f custom-fork-files/mod.json ./mod.json
+
+      # Step 3: Run the compiler on the merged files
       - name: Build Mod
         uses: geode-sdk/build-geode-mod@main
         with:
